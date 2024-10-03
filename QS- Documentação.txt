@@ -1,0 +1,107 @@
+Api/APIRest.php - Complexidade ciclomática - 108
+	 - Linhas de código - 694
+	 - bug 1 -  foreach ($_FILES[$filename]['name'] as &$name) {
+Certifique-se de que a variável de valor referenciada não esteja definida após o loop.
+                    $name = $rand_name . $name;
+                }
+            } else {
+
+
+
+EXPLICAÇÃO GERAL:
+
+Complexidade Ciclomática: O valor de 108 indica que o código é muito complexo e difícil de manter. Idealmente, deve ser reduzido através de refatoração.
+
+Linhas de Código: Com 694 linhas, o arquivo é extenso e deve ser dividido em funções menores e mais focadas.
+
+Erro no Loop foreach:
+
+Problema: Usar &$name por referência pode causar problemas se a variável for usada fora do loop.
+
+SOLUÇÃO: Evite usar a referência
+
+foreach ($_FILES[$filename]['name'] as $name) {
+    $name = $rand_name . $name;
+}
+
+Se usar referência, desreferencie ao final:
+foreach ($_FILES[$filename]['name'] as &$name) {
+    $name = $rand_name . $name;
+}
+unset($name); // Desreferencia
+
+CONCLUSÃO:  Refatore o código para reduzir a complexidade e melhorar a legibilidade.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Cache/GereciadorCache.php - Complexidade ciclomática - 70
+	    - Linhas de código - 286
+	    - bug 2 -      {
+        $config_file = $this->config_dir . DIRECTORY_SEPARATOR . self::CONFIG_FILENAME;
+Uncovered code
+        $config = [];
+        if (file_exists($config_file)) {
+            $config  = include($config_file);
+Substitua "include" por "include_once".
+            $contexts = $config['contexts'] ?? [];
+            foreach ($contexts as $context => $context_config) {
+                if (!$this->isContextValid($context, true)) {
+                    trigger_error(sprintf('Invalid or non configurable context: "%s".', $context), E_USER_NOTICE);
+                    unset($config['contexts'][$context]);
+                    continue;
+                }
+                if (
+                    !$this->isContextValid($context, true)
+
+EXPLICAÇÃO GERAL:
+O arquivo Cache/GereciadorCache.php possui alta complexidade ciclomática (70) e 286 linhas de código, tornando-o difícil de entender e manter. 
+A recomendação de substituir include por include_once é crucial para evitar múltiplas inclusões do arquivo de configuração, o que pode causar bugs.
+É validada porque: Segurança: Garante que o arquivo de configuração seja incluído apenas uma vez, evitando redefinições.
+Clareza: Reduz a chance de comportamentos indesejados, tornando o código mais previsível. 
+Para melhorar, sugere-se refatorar o código em funções menores, documentar partes complexas e implementar testes unitários, facilitando a manutenção e a legibilidade.
+
+SOLUÇÃO:
+$config_file = $this->config_dir . DIRECTORY_SEPARATOR . self::CONFIG_FILENAME;
+$config = [];
+if (file_exists($config_file)) {
+    $config = include_once($config_file); // Substituído por include_once
+    $contexts = $config['contexts'] ?? [];
+    foreach ($contexts as $context => $context_config) {
+        if (!$this->isContextValid($context, true)) {
+            trigger_error(sprintf('Invalid or non-configurable context: "%s".', $context), E_USER_NOTICE);
+            unset($config['contexts'][$context]);
+            continue;
+        }
+        // Outras operações...
+    }
+}
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+glpi/DatabaseInstance.php -Complexidade ciclomática - 43
+	-linhas de código - 628
+	-bug 3 -     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        switch ($item->getType()) {
+Remova essa estrutura condicional ou edite seus blocos de código para que eles não sejam todos iguais.
+            default:
+                if (in_array($item->getType(), self::getTypes())) {
+                    self::showInstances($item, $withtemplate);
+                }
+        }
+Uncovered code
+        return true;
+    }
+    public static function showInstances(CommonDBTM $item, $withtemplate)
+
+EXPLICAÇÃO GERAL:
+O código tem alta complexidade (ciclomática 43) e muitas linhas (628). O problema principal é a repetição na estrutura condicional switch, que pode ser simplificada.
+Remover o switch: O default é redundante. Substitua por uma simples condição if.
+
+SOLUÇÃO:
+public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+{
+    if (in_array($item->getType(), self::getTypes())) {
+        self::showInstances($item, $withtemplate);
+    }
+    return true;
+}
